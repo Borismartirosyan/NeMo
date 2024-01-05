@@ -38,9 +38,9 @@ model:
   seed: 1234
   tensor_model_parallel_size: 1 # intra-layer model parallelism
   pipeline_model_parallel_size: 1 # inter-layer model parallelism
-  global_batch_size: 128
-  micro_batch_size: 4
-  restore_from_path: ??? # Path to an existing p-tuned/prompt tuned .nemo model you wish to add new tasks to or run inference with
+  global_batch_size: 2
+  micro_batch_size: 2
+  restore_from_path: /GPT_project/models/gpt_pretrain_220m_len_4096_pos_alibi_step_595508_gbs256.nemo # Path to an existing p-tuned/prompt tuned .nemo model you wish to add new tasks to or run inference with
   resume_from_checkpoint: null # The path to a checkpoint file to continue the training, restores the whole state including the epoch, step, LR schedulers, apex, etc.
   save_nemo_on_validation_end: True # Saves an inference ready .nemo file every time a checkpoint is saved during training. 
   sync_batch_comm: False
@@ -85,7 +85,8 @@ model:
       #   - /path/to/boolq.jsonl
       # Example of how each dataset is formatted
       # {'input': 'John von Neumann\nVon Neumann made fundamental contributions .... Q: What did the math of artificial viscosity do?', 'output': 'smoothed the shock transition without sacrificing basic physics'}
-      file_names: ??? # Path to a list of JSONL files corresponding to the source data.
+      file_names:
+        - /GPT_project/GPT_SFT_preprocessed_data/text_data_sent_anly/train.jsonl # Path to a list of JSONL files corresponding to the source data.
       global_batch_size: ${model.global_batch_size}
       micro_batch_size: ${model.micro_batch_size}
       shuffle: True
@@ -100,7 +101,8 @@ model:
       #   - 0.5
       #   - 0.25
       #   - 0.25
-      concat_sampling_probabilities: null # When providing a list of datasets, this arg defines the sampling probabilities from each dataset when strategy='random'
+      concat_sampling_probabilities:
+         - 1 # When providing a list of datasets, this arg defines the sampling probabilities from each dataset when strategy='random'
       label_key: 'output'
       add_eos: True
       add_sep: False
@@ -112,7 +114,8 @@ model:
       truncation_method: 'right' # Truncation from which position, Options: ['left', 'right'] 
 
     validation_ds:
-      file_names: ??? # Path to a list of JSONL files corresponding to the source data. Data format is identical to train_ds.
+      file_names:
+        - /GPT_project/GPT_SFT_preprocessed_data/text_data_sent_anly/valid.jsonl # Path to a list of JSONL files corresponding to the source data. Data format is identical to train_ds.
       names: null # Names of the corresponding datasets used to log metrics.
       global_batch_size: ${model.global_batch_size}
       micro_batch_size: ${model.micro_batch_size}
@@ -142,7 +145,8 @@ model:
         num_classes: null
 
     test_ds:
-      file_names: ??? # Path to a list of JSONL files corresponding to the source data. Data format is identical to train_ds.
+      file_names:
+        - /GPT_project/GPT_SFT_preprocessed_data/text_data_sent_anly/test_output.jsonl # Path to a list of JSONL files corresponding to the source data. Data format is identical to train_ds.
       names: null # Names of the corresponding datasets used to log metrics.
       global_batch_size: ${model.global_batch_size}
       micro_batch_size: ${model.micro_batch_size}
