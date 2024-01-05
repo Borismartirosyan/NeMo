@@ -59,7 +59,7 @@ def augment_whole_dataset_drop(dataset_path, tokenizer, percent_perturb, save_pa
     with open(dataset_path) as file:
         i = 0
         for line in file.readlines():
-            line
+
             json_line = json.loads(line)
 
             if which_to_perturb[i]:
@@ -77,22 +77,26 @@ def augment_whole_dataset_drop(dataset_path, tokenizer, percent_perturb, save_pa
 
 def main(args):
 
-    if args.augment_type == 'Drop_token':
-        if not os.path.exists(args.tk_path):
-            model_file, vocab_file = create_spt_model(
-                data_file=args.data_file,
-                vocab_size=args.vocab_size,
-                sample_size=args.sample_size,
-                do_lower_case=args.do_lower_case,
-                tokenizer_type=args.tk_type,
-                output_dir=args.o_dir,
-                character_coverage=args.char_cov
-                # Include other parameters if necessary
-            )
 
-        tknzr = SentencePieceTokenizer(args.tk_path)
+    if not os.path.exists(args.tk_path):
+        model_file, vocab_file = create_spt_model(
+            data_file=args.data_file,
+            vocab_size=args.vocab_size,
+            sample_size=args.sample_size,
+            do_lower_case=args.do_lower_case,
+            tokenizer_type=args.tk_type,
+            output_dir=args.o_dir,
+            character_coverage=args.char_cov
+            # Include other parameters if necessary
+        )
 
+    tknzr = SentencePieceTokenizer(args.tk_path)
+
+    if args.augment_type == 'drop':
         augment_whole_dataset_drop(args.data_file, tknzr, args.percent_to_perturb, args.output_path)
+
+    
+
 
     
 
@@ -111,16 +115,12 @@ if __name__ == "__main__":
     parser.add_argument('--percent_to_perturb', default=0.3, help='Which percent of whole dataset will be perturbed')
     parser.add_argument('--percent_of_tokens', default=0.1, help='One sequence perturbation number')
     parser.add_argument('--output_path', default='/GPT_project/GPT_SFT_preprocessed_data/train_drop_augmented.jsonl')
-    parser.add_argument('--augment_type', default='Drop_token')
+    parser.add_argument('--augment_type', default='drop', help='The augmentation type that you want to use')
 
     args = parser.parse_args()
 
 
     main(args)
 
-    with open(args.data_file) as file:
-        print(sum(1 for i in file.readlines()))
 
-    with open(args.output_path) as file:
-        print(sum(1 for i in file.readlines()))
 
