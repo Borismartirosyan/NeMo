@@ -364,6 +364,12 @@ class MegatronGPTModel(MegatronBaseModel, TextGeneration):
                 rotary_percent=self.cfg.get('rotary_percentage', 1.0),
                 seq_len_interpolation_factor=self.cfg.get('seq_len_interpolation_factor', None),
                 rotary_base=self.cfg.get('rotary_base', 10000),
+                use_embedmix = self.cfg.get("use_embedmix", False),
+                embedmix_subset_perturb = self.cfg.get("subset_perturb", 0.1),
+                embedmix_embedding_perturb = self.cfg.get("embedding_perturb", 0.1),
+                embedmix_perturb_tokens_per_seq = self.cfg.get("perturb_tokens_per_seq", 0.1),
+                embedmix_augment_type = self.cfg.get("augment_type", "addition"),
+                embedmix_alpha = self.cfg.get("alpha", 0.1),
             )
         else:
             assert self.cfg.get('num_query_groups', None) is None or self.cfg.get(
